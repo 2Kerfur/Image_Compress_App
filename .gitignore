@@ -2,6 +2,11 @@
 **/Release
 **/IMG_Compression/Debug
 **/IMG_Compression/Release
-*.vcxproj
-*.filters
+*.rsuser
+*.suo
 *.user
+*.userosscache
+*.sln.docstates
+
+# User-specific files (MonoDevelop/Xamarin Studio)
+*.userprefs
