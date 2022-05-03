@@ -1,5 +1,0 @@
-﻿  App.cpp
-D:\DEV\c++\IMG_Compression\IMG_Compression\src\App.h(30,5): error C2374: 'Info_window_width': redefinition; multiple initialization
-D:\DEV\c++\IMG_Compression\IMG_Compression\src\App.h(24): message : see declaration of 'Info_window_width'
-D:\DEV\c++\IMG_Compression\IMG_Compression\src\App.h(31,5): error C2374: 'Info_window_height': redefinition; multiple initialization
-D:\DEV\c++\IMG_Compression\IMG_Compression\src\App.h(25): message : see declaration of 'Info_window_height'
