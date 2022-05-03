@@ -1,12 +1,6 @@
+*.user
+*.vbproj text merge=union 
 **/Debug
 **/Release
 **/IMG_Compression/Debug
 **/IMG_Compression/Release
-*.rsuser
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
-
-# User-specific files (MonoDevelop/Xamarin Studio)
-*.userprefs
