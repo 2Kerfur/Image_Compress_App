@@ -1,5 +1,6 @@
 *.user
-*.vbproj text merge=union 
+*.vcxproj
+*.filters
 **/Debug
 **/Release
 **/IMG_Compression/Debug
