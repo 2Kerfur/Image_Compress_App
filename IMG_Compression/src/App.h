@@ -26,9 +26,9 @@ int Info_window_height = 350;
 
 //settings window
 LPCWSTR Settings_window_name = L"Settings";
-LPCWSTR Inf_window_class_name = L"WindowClass_2";
-int Info_window_width = 350;
-int Info_window_height = 350;
+LPCWSTR Settings_window_class_name = L"WindowClass_3";
+int Settings_window_width = 350;
+int Settings_window_height = 350;
 
 //logic image vars
 LPCWSTR image_path;
@@ -45,6 +45,7 @@ int program_state = 0; //set default program state
 #define M_MENU_ID_OPEN_FOLDER 2
 #define M_MENU_ID_EXIT 3
 #define M_MENU_ID_APP_INFO 4
+#define M_MENU_ID_SETTINGS 6
 
 //tools menu
 void M_CheckToolbarInput(WPARAM, HWND, HDC);
@@ -83,6 +84,16 @@ HWND Info_text_3;
 
 HWND Info_Github_button;
 
+//Settings window
+void RegisterSettingsWindowClass(HINSTANCE);
+void CreateSettingsWindow(HWND hWnd);
+
+void Settings_AddGUI(HWND hWnd);
+void Settings_Update(HWND hWnd);
+void Settings_CheckButtonInput(WPARAM wp, HWND hWnd);
+
+
 //window procedures callbacks
 LRESULT CALLBACK M_WindowProcedure(HWND, UINT, WPARAM, LPARAM);
 LRESULT CALLBACK Info_WindowProcedure(HWND, UINT, WPARAM, LPARAM);
+LRESULT CALLBACK Settings_WindowProcedure(HWND, UINT, WPARAM, LPARAM);

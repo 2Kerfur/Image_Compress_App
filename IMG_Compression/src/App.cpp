@@ -10,6 +10,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int ncmdsho
 	//register and create windows
 	if (!RegisterMWindowClass(hInst)) { return -1; }
 	RegisterInfoWindowClass(hInst);
+	RegisterSettingsWindowClass(hInst);
 	CreateMWindow();
 	MSG msg = { 0 };
 	while (GetMessage(&msg, NULL, NULL, NULL) )
@@ -107,6 +108,8 @@ void M_AddToolbar(HWND hWnd)
 
 	AppendMenu(MainToolbar, MF_POPUP, (UINT_PTR)ChildAboutMenu, L"About");
 	AppendMenu(ChildAboutMenu, MF_STRING, M_MENU_ID_APP_INFO, L"App Info");
+
+	AppendMenu(MainToolbar, MF_STRING, M_MENU_ID_SETTINGS, L"Settings");
 	
 	SetMenu(hWnd, MainToolbar);
 }
@@ -127,7 +130,11 @@ void M_CheckToolbarInput(WPARAM wp, HWND hWnd, HDC hdc)
 	case M_MENU_ID_APP_INFO:
 		M_Menu_App_Info(hWnd);
 		break;
+	case M_MENU_ID_SETTINGS:
+		CreateSettingsWindow(hWnd);
+		break;
 	}
+	
 }
 
 void M_Menu_Open_File(HWND hWnd, HDC hdc)
@@ -247,6 +254,28 @@ void CreateMWindow()
 		M_window_height, NULL, NULL, NULL, NULL); //create window from window class
 }
 //main window --
+
+//settings window --
+void RegisterSettingsWindowClass(HINSTANCE hInst)
+{
+	WNDCLASSW dialog_1 = { 0 };
+	dialog_1.hbrBackground = (HBRUSH)COLOR_WINDOW;
+	dialog_1.hCursor = LoadCursor(NULL, IDC_ARROW);
+	dialog_1.hInstance = hInst;
+	dialog_1.lpszClassName = Settings_window_class_name;
+	dialog_1.lpfnWndProc = Settings_WindowProcedure;
+	dialog_1.hIcon = (HICON)LoadImage(NULL, L"resources/question.ico", IMAGE_ICON, 32, 32, LR_LOADFROMFILE | LR_DEFAULTSIZE);
+
+	RegisterClassW(&dialog_1);
+}
+
+void CreateSettingsWindow(HWND hWnd)
+{
+	CreateWindowW(Settings_window_class_name, Settings_window_name,
+		WS_VISIBLE | WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, 500, 500, Settings_window_width,
+		Settings_window_height, NULL, NULL, NULL, NULL);
+}
+//settings window --
 void Info_CheckButtonInput(WPARAM wp, HWND hWnd) {
 	
 	switch (wp)
@@ -288,6 +317,24 @@ void Info_AddGUI(HWND hWnd)
 	SendMessage(Info_text_2, WM_SETFONT, WPARAM(hFont), TRUE);
 	SendMessage(Info_text_3, WM_SETFONT, WPARAM(hFont), TRUE);
 	SendMessage(Info_Github_button, WM_SETFONT, WPARAM(hFont), TRUE);
+}
+
+void Settings_Update(HWND hWnd)
+{
+
+}
+
+void Settings_CheckButtonInput(WPARAM wp, HWND hWnd)
+{
+}
+void Settings_AddGUI(HWND hWnd)
+{
+	HWND Info_text_3 = CreateWindowW(L"static", L"This program created for jpg image compression",
+		WS_VISIBLE | WS_CHILD, 10, 10, 350, 100,
+		hWnd, NULL, NULL, NULL);
+	HWND Info_text_4 = CreateWindowW(L"static", L"Program support .jpg files only",
+		WS_VISIBLE | WS_CHILD, 10, 40, 350, 100,
+		hWnd, NULL, NULL, NULL);
 }
 
 //procedures ---
@@ -339,6 +386,25 @@ LRESULT CALLBACK Info_WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 		Info_Update(hWnd);
 	case WM_CREATE:
 		Info_AddGUI(hWnd);
+	default:
+		return DefWindowProcW(hWnd, msg, wp, lp);
+	}
+}
+
+LRESULT CALLBACK Settings_WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
+{
+	switch (msg)
+	{
+	case WM_CLOSE:
+		DestroyWindow(hWnd);
+		break;
+	case WM_PAINT:
+		break;
+	case WM_COMMAND:
+		break;
+	case WM_CREATE:
+		Settings_AddGUI(hWnd);
+		break;
 	default:
 		return DefWindowProcW(hWnd, msg, wp, lp);
 	}
