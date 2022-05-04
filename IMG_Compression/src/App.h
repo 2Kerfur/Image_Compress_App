@@ -27,8 +27,8 @@ int Info_window_height = 350;
 //settings window
 LPCWSTR Settings_window_name = L"Settings";
 LPCWSTR Settings_window_class_name = L"WindowClass_3";
-int Settings_window_width = 350;
-int Settings_window_height = 350;
+int Settings_window_width = 500;
+int Settings_window_height = 500;
 
 //logic image vars
 LPCWSTR image_path;
@@ -48,9 +48,9 @@ int program_state = 0; //set default program state
 #define M_MENU_ID_SETTINGS 6
 
 //tools menu
-void M_CheckToolbarInput(WPARAM, HWND, HDC);
+void M_CheckToolbarInput(WPARAM, HWND);
 void M_AddToolbar(HWND);
-void M_Menu_Open_File(HWND, HDC);
+void M_Menu_Open_File(HWND); // HDC
 void M_Menu_Open_Folder(HWND);
 void M_Menu_Exit(HWND);
 void M_Menu_App_Info(HWND);
