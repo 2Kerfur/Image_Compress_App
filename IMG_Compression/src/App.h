@@ -8,8 +8,9 @@
 #include <shellapi.h> //open browser
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING //filesystem fix error
 #include <experimental/filesystem>
-//#include "GDIBitmapScaling.h"
+
 #include "Button.h"
+#include "Text.h"
 #include "Log.h"
 
 // M_ <-- means main

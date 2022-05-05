@@ -1,4 +1,4 @@
-#include "App.h"
+#include "App.h" //430
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int ncmdshow)
 {
@@ -34,23 +34,11 @@ void M_AddGUI(HWND hWnd)
 	////const char* filename = "D:\\DEV\\c++\\IMG_Compression\\Release\\resources\\example.png";
 	//HBITMAP bmp = (HBITMAP)LoadImage(NULL, filename,
 	//	IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
-	HWND hwndButton = CreateWindow(
-		L"BUTTON",  // Predefined class; Unicode assumed 
-		L"CONVERT",      // Button text 
-		WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles 
-		200,         // x position 
-		200,         // y position 
-		150,        // Button width
-		50,        // Button height
-		hWnd,     // Parent window
-		NULL,       // No menu.
-		(HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
-		NULL);      // Pointer not needed.
 	//hWnd, L"hi", NULL, 200, 200, 50, 100
 	Button button;
-	button.Create(hWnd, L"hi", NULL, 200, 200, 50, 100);
-	button.SetText(L"Edited Text");
-	DestroyWindow(hwndButton);
+	button.Create(hWnd, L"Convert", NULL, 200, 200, 50, 100);
+	button.SetSize(100, 100);
+	button.SetPos(0, 0);
 }
 
 void M_CreatePopupMenuOnCursor(HWND hWnd) //for future dev
@@ -298,30 +286,25 @@ void Info_Update(HWND hWnd)
 }
 void Info_AddGUI(HWND hWnd)
 {
-	Info_text_1 = CreateWindowW(L"static", L"This program created for jpg image compression",
+
+	Text text_1;
+	text_1.Create(hWnd, L"This program created for jpg image compression", NULL, 10, 10, 350, 100);
+	/*Info_text_1 = CreateWindowW(L"static", L"This program created for jpg image compression",
 		WS_VISIBLE | WS_CHILD, 10, 10, 350, 100,
-		hWnd, NULL, NULL, NULL);
+		hWnd, NULL, NULL, NULL);*/
 	Info_text_2 = CreateWindowW(L"static", L"Program support .jpg files only",
 		WS_VISIBLE | WS_CHILD, 10, 40, 350, 100,
 		hWnd, NULL, NULL, NULL);
 	Info_text_3 = CreateWindowW(L"static", L"Developed by: 2Kefur",
 		WS_VISIBLE | WS_CHILD, 100, 255, 180, 180,
 		hWnd, NULL, NULL, NULL);
-	Info_Github_button = CreateWindowW(L"BUTTON", L"GITHUB",
-		WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-		130,         // x position 
-		280,         // y position 
-		70,        // Button width
-		20,        // Button height
-		hWnd,     // Parent window
-		(HMENU)INFO_BUTTON_GIT,
-		NULL,
-		NULL);
-	auto hFont = CreateFont(18, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Segoe UI");
-	SendMessage(Info_text_1, WM_SETFONT, WPARAM(hFont), TRUE);
-	SendMessage(Info_text_2, WM_SETFONT, WPARAM(hFont), TRUE);
+	Button Github_button;
+	Github_button.Create(hWnd, L"GITHUB", INFO_BUTTON_GIT, 130, 280, 70, 20);
+	HFONT hFont = CreateFont(18, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Segoe UI");
+	text_1.SetFont(hFont);
+	SendMessage(text_1.hWnd, WM_SETFONT, WPARAM(hFont), TRUE);
 	SendMessage(Info_text_3, WM_SETFONT, WPARAM(hFont), TRUE);
-	SendMessage(Info_Github_button, WM_SETFONT, WPARAM(hFont), TRUE);
+	Github_button.SetFont(hFont);
 }
 
 void Settings_Update(HWND hWnd)
@@ -334,6 +317,7 @@ void Settings_CheckButtonInput(WPARAM wp, HWND hWnd)
 }
 void Settings_AddGUI(HWND hWnd)
 {
+	APP_LOG("GUI added to settings");
 	HWND Settings_text_1 = CreateWindowW(L"static", L"Image Save Path:",
 		WS_VISIBLE | WS_CHILD, 10, 10, 350, 100,
 		hWnd, NULL, NULL, NULL);
@@ -353,7 +337,8 @@ void Settings_AddGUI(HWND hWnd)
 		hWnd,         // parent window 
 		NULL,   // edit control ID 
 		(HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
-		NULL);        // pointer not needed 
+		NULL);        // pointer not needed
+
 }
 
 //procedures ---
@@ -364,9 +349,9 @@ LRESULT CALLBACK M_WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 	switch (msg)
 	{
 	case WM_PAINT:
-		hdc = BeginPaint(hWnd, &ps);
-		M_Draw(hdc); //draw
-		EndPaint(hWnd, &ps);
+		//hdc = BeginPaint(hWnd, &ps);
+		//M_Draw(hdc); //draw
+		//EndPaint(hWnd, &ps);
 		break;
 	case WM_COMMAND:
 		M_CheckToolbarInput(wp, hWnd);
