@@ -1,36 +1,38 @@
 #pragma once
 #include <Windows.h>
-#include <shobjidl.h> 
-#include <shlobj.h> 
 #include <string>
 #include <gdiplus.h> //for drawing
 #include <iostream>
 #include <shellapi.h> //open browser
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING //filesystem fix error
-#include <experimental/filesystem>
 
 #include "gui/Gui.h" //include all gui classes (Button, Text , etc...)
-#include "Log.h"
+#include "util/Log.h"
+#include "util/FileDialog.h"
 
 // M_ <-- means main
 
-//main window
-LPCWSTR M_window_name = L"Image Commpression App";
-LPCWSTR M_window_class_name = L"WindowClass";
-int M_window_width = 700;
-int M_window_height = 700;
+//TODO: organize this structures better create one structure or create "window class"
+struct MAIN_WINDOW {
+    LPCWSTR name = L"Image Commpression App";
+    LPCWSTR class_name = L"WindowClass";
+    int width = 700;
+    int height = 700;
+} Main_Window;
 
-//about window
-LPCWSTR Info_window_name = L"About";
-LPCWSTR Info_window_class_name = L"WindowClass_2";
-int Info_window_width = 350;
-int Info_window_height = 350;
+struct INFO_WINDOW {
+    LPCWSTR name = L"About";
+    LPCWSTR class_name = L"WindowClass_2";
+    int width = 350;
+    int height = 350;
+} Info_Window;
 
-//settings window
-LPCWSTR Settings_window_name = L"Settings";
-LPCWSTR Settings_window_class_name = L"WindowClass_3";
-int Settings_window_width = 500;
-int Settings_window_height = 500;
+struct SETTINGS_WINDOW {
+    LPCWSTR name = L"Settings";
+    LPCWSTR class_name = L"WindowClass_3";
+    int width = 500;
+    int height = 500;
+} Settings_Window;
+
 
 //logic image vars
 LPCWSTR image_path;
@@ -73,18 +75,10 @@ void CreateMWindow();
 #define INFO_BUTTON_GIT 5
 
 void Info_AddGUI(HWND hWnd);
-void Info_Update(HWND hWnd);
 void Info_CheckButtonInput(WPARAM wp, HWND hWnd);
 
 void RegisterInfoWindowClass(HINSTANCE);
 void CreateInfoWindow(HWND hWnd);
-
-//info window objects
-HWND Info_text_1;
-HWND Info_text_2;
-HWND Info_text_3;
-
-HWND Info_Github_button;
 
 //Settings window
 void RegisterSettingsWindowClass(HINSTANCE);
@@ -93,7 +87,6 @@ void CreateSettingsWindow(HWND hWnd);
 void Settings_AddGUI(HWND hWnd);
 void Settings_Update(HWND hWnd);
 void Settings_CheckButtonInput(WPARAM wp, HWND hWnd);
-
 
 //window procedures callbacks
 LRESULT CALLBACK M_WindowProcedure(HWND, UINT, WPARAM, LPARAM);

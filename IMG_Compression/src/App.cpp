@@ -79,13 +79,12 @@ void M_Draw(HDC hdc) {
 	{
 		Gdiplus::Bitmap example_bmp(image_path);
 		gf.DrawImage(&example_bmp, 264, 0);
+		//RedrawWindow(hWnd, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 		break;
 	}
 	case FOLDER_OPENED:
 		break;
 	}
-
-	
 }
 
 //toolbar
@@ -132,59 +131,12 @@ void M_CheckToolbarInput(WPARAM wp, HWND hWnd)
 
 void M_Menu_Open_File(HWND hWnd)
 {
-	APP_LOG("Menu Open File Dialog\n");
-	PWSTR pszFilePath;
-	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
-		COINIT_DISABLE_OLE1DDE);
-	if (SUCCEEDED(hr))
-	{
-		IFileOpenDialog* pFileOpen;
-		hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
-			IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
-		if (SUCCEEDED(hr))
-		{
-			hr = pFileOpen->Show(NULL); // Show the Open dialog box.
-			if (SUCCEEDED(hr))
-			{
-				IShellItem* pItem;
-				hr = pFileOpen->GetResult(&pItem);
-				if (SUCCEEDED(hr))
-				{
-					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
-					if (SUCCEEDED(hr))
-					{
-						CoTaskMemFree(pszFilePath);
-
-						namespace fs = std::experimental::filesystem;
-						fs::path filePath = pszFilePath;
-						if (filePath.extension() == ".jpg")
-						{
-							image_path = pszFilePath;
-							program_state = IMAGE_OPENED;
-							RedrawWindow(hWnd, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
-						}
-						else
-						{
-							fs::path f_name_p = filePath.extension();
-							std::string f_name = f_name_p.filename().string();
-							std::wstring wstr(f_name.begin(), f_name.end());
-							std::wstring concatted_stdstr = L"Application does not support " + wstr;
-							LPCWSTR concatted = concatted_stdstr.c_str();
-							int ErrorBox = MessageBox(
-								hWnd,
-								(LPCWSTR)concatted,
-								(LPCWSTR)L"Error",
-								MB_ICONERROR
-							);
-						}
-					}
-					pItem->Release();
-				}
-			}
-			pFileOpen->Release();
-		}
-		CoUninitialize();
-	}
+	FileDialog fileDialog;
+	image_path = fileDialog.OpenFile(hWnd);
+	if (image_path != L"NoFile") {
+		program_state = IMAGE_OPENED;
+		RedrawWindow(hWnd, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+	} else { APP_LOG("NO image was opened"); }
 }
 
 void M_Menu_Open_Folder(HWND hWnd)
@@ -211,7 +163,7 @@ void RegisterInfoWindowClass(HINSTANCE hInst) {
 	dialog.hbrBackground = (HBRUSH)COLOR_WINDOW;
 	dialog.hCursor = LoadCursor(NULL, IDC_ARROW);
 	dialog.hInstance = hInst;
-	dialog.lpszClassName = Info_window_class_name;
+	dialog.lpszClassName = Info_Window.class_name;
 	dialog.lpfnWndProc = Info_WindowProcedure;
 	dialog.hIcon = (HICON)LoadImage(NULL, L"resources/question.ico", IMAGE_ICON, 32, 32, LR_LOADFROMFILE | LR_DEFAULTSIZE);
 
@@ -219,10 +171,10 @@ void RegisterInfoWindowClass(HINSTANCE hInst) {
 }
 void CreateInfoWindow(HWND hWnd)
 {
-	CreateWindowW(Info_window_class_name, Info_window_name, 
+	CreateWindowW(Info_Window.class_name, Info_Window.name, 
 		WS_VISIBLE | WS_OVERLAPPED | WS_CAPTION |
 		WS_SYSMENU | WS_MINIMIZEBOX,
-		500, 500, Info_window_width, Info_window_height, 
+		500, 500, Info_Window.width, Info_Window.height, 
 		hWnd, NULL, NULL, NULL);
 }
 //info window --
@@ -234,7 +186,7 @@ int RegisterMWindowClass(HINSTANCE hInst)
 	wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wc.hInstance = hInst;
-	wc.lpszClassName = M_window_class_name;
+	wc.lpszClassName = Main_Window.class_name;
 	wc.lpfnWndProc = M_WindowProcedure;
 	wc.hIcon = (HICON)LoadImage(NULL, L"resources/icon.ico", IMAGE_ICON, 32, 32, LR_LOADFROMFILE | LR_DEFAULTSIZE);
 	if (!RegisterClassW(&wc))
@@ -242,9 +194,9 @@ int RegisterMWindowClass(HINSTANCE hInst)
 }
 void CreateMWindow()
 {
-	CreateWindowW(M_window_class_name, M_window_name,
-		WS_VISIBLE | WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, 100, 100, M_window_width,
-		M_window_height, NULL, NULL, NULL, NULL); //create window from window class
+	CreateWindowW(Main_Window.class_name, Main_Window.name,
+		WS_VISIBLE | WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, 100, 100, Main_Window.width,
+		Main_Window.height, NULL, NULL, NULL, NULL); //create window from window class
 }
 //main window --
 
@@ -255,7 +207,7 @@ void RegisterSettingsWindowClass(HINSTANCE hInst)
 	dialog_1.hbrBackground = (HBRUSH)COLOR_WINDOW;
 	dialog_1.hCursor = LoadCursor(NULL, IDC_ARROW);
 	dialog_1.hInstance = hInst;
-	dialog_1.lpszClassName = Settings_window_class_name;
+	dialog_1.lpszClassName = Settings_Window.class_name;
 	dialog_1.lpfnWndProc = Settings_WindowProcedure;
 	dialog_1.hIcon = (HICON)LoadImage(NULL, L"resources/question.ico", IMAGE_ICON, 32, 32, LR_LOADFROMFILE | LR_DEFAULTSIZE);
 	RegisterClassW(&dialog_1);
@@ -263,9 +215,9 @@ void RegisterSettingsWindowClass(HINSTANCE hInst)
 
 void CreateSettingsWindow(HWND hWnd)
 {
-	CreateWindowW(Settings_window_class_name, Settings_window_name,
-		WS_VISIBLE | WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, 500, 500, Settings_window_width,
-		Settings_window_height, hWnd, NULL, NULL, NULL);
+	CreateWindowW(Settings_Window.class_name, Settings_Window.name,
+		WS_VISIBLE | WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, 500, 500, Settings_Window.width,
+		Settings_Window.height, hWnd, NULL, NULL, NULL);
 }
 //settings window --
 void Info_CheckButtonInput(WPARAM wp, HWND hWnd) {
@@ -279,10 +231,6 @@ void Info_CheckButtonInput(WPARAM wp, HWND hWnd) {
 
 }
 
-void Info_Update(HWND hWnd)
-{
-	
-}
 void Info_AddGUI(HWND hWnd)
 {
 	HFONT SegoeFont = CreateFont(18, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Segoe UI");
@@ -308,17 +256,6 @@ void Settings_AddGUI(HWND hWnd)
 	auto hFont = CreateFont(18, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Segoe UI");
 	Text text_1;
 	text_1.Create(hWnd, L"Image Save Path: ", NULL, 10, 10, 350, 100, NULL);
-	HWND hwndEdit = CreateWindowEx(
-		0, L"EDIT",   // predefined class 
-		NULL,         // no window title 
-		WS_CHILD | WS_VISIBLE | WS_VSCROLL |
-		ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL,
-		120, 10, 200, 20,   // set size in WM_SIZE message 
-		hWnd,         // parent window 
-		NULL,   // edit control ID 
-		(HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
-		NULL);        // pointer not needed
-
 }
 
 //procedures ---
@@ -367,7 +304,6 @@ LRESULT CALLBACK Info_WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 		break;
 	case WM_COMMAND:
 		Info_CheckButtonInput(wp, hWnd);
-		Info_Update(hWnd);
 		break;
 	case WM_CREATE:
 		Info_AddGUI(hWnd);
