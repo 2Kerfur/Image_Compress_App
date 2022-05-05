@@ -46,6 +46,10 @@ void M_AddGUI(HWND hWnd)
 		NULL,       // No menu.
 		(HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
 		NULL);      // Pointer not needed.
+	//hWnd, L"hi", NULL, 200, 200, 50, 100
+	Button button;
+	button.Create(hWnd, L"hi", NULL, 200, 200, 50, 100);
+	button.SetText(L"Edited Text");
 	DestroyWindow(hwndButton);
 }
 
