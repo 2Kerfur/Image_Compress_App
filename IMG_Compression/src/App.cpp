@@ -258,7 +258,6 @@ void RegisterSettingsWindowClass(HINSTANCE hInst)
 	dialog_1.lpszClassName = Settings_window_class_name;
 	dialog_1.lpfnWndProc = Settings_WindowProcedure;
 	dialog_1.hIcon = (HICON)LoadImage(NULL, L"resources/question.ico", IMAGE_ICON, 32, 32, LR_LOADFROMFILE | LR_DEFAULTSIZE);
-
 	RegisterClassW(&dialog_1);
 }
 
@@ -286,25 +285,14 @@ void Info_Update(HWND hWnd)
 }
 void Info_AddGUI(HWND hWnd)
 {
-
-	Text text_1;
-	text_1.Create(hWnd, L"This program created for jpg image compression", NULL, 10, 10, 350, 100);
-	/*Info_text_1 = CreateWindowW(L"static", L"This program created for jpg image compression",
-		WS_VISIBLE | WS_CHILD, 10, 10, 350, 100,
-		hWnd, NULL, NULL, NULL);*/
-	Info_text_2 = CreateWindowW(L"static", L"Program support .jpg files only",
-		WS_VISIBLE | WS_CHILD, 10, 40, 350, 100,
-		hWnd, NULL, NULL, NULL);
-	Info_text_3 = CreateWindowW(L"static", L"Developed by: 2Kefur",
-		WS_VISIBLE | WS_CHILD, 100, 255, 180, 180,
-		hWnd, NULL, NULL, NULL);
+	HFONT SegoeFont = CreateFont(18, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Segoe UI");
+	Text text_1, text_2, text_3;
 	Button Github_button;
+	text_1.Create(hWnd, L"This program created for jpg image compression", NULL, 10, 10, 350, 100, SegoeFont);
+	text_2.Create(hWnd, L"Program support .jpg files only", NULL, 10, 35, 350, 100, SegoeFont);
+	text_3.Create(hWnd, L"Developed by: 2Kefur", NULL, 100, 255, 180, 180, SegoeFont);
 	Github_button.Create(hWnd, L"GITHUB", INFO_BUTTON_GIT, 130, 280, 70, 20);
-	HFONT hFont = CreateFont(18, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Segoe UI");
-	text_1.SetFont(hFont);
-	SendMessage(text_1.hWnd, WM_SETFONT, WPARAM(hFont), TRUE);
-	SendMessage(Info_text_3, WM_SETFONT, WPARAM(hFont), TRUE);
-	Github_button.SetFont(hFont);
+	Github_button.SetFont(SegoeFont);
 }
 
 void Settings_Update(HWND hWnd)
@@ -317,17 +305,9 @@ void Settings_CheckButtonInput(WPARAM wp, HWND hWnd)
 }
 void Settings_AddGUI(HWND hWnd)
 {
-	APP_LOG("GUI added to settings");
-	HWND Settings_text_1 = CreateWindowW(L"static", L"Image Save Path:",
-		WS_VISIBLE | WS_CHILD, 10, 10, 350, 100,
-		hWnd, NULL, NULL, NULL);
-	//HWND Settings_text_2 = CreateWindowW(L"static", L"Program support .jpg files only",
-		//WS_VISIBLE | WS_CHILD, 10, 40, 350, 100,
-		//hWnd, NULL, NULL, NULL);
 	auto hFont = CreateFont(18, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Segoe UI");
-	SendMessage(Settings_text_1, WM_SETFONT, WPARAM(hFont), TRUE);
-	//SendMessage(Settings_text_2, WM_SETFONT, WPARAM(hFont), TRUE);
-	
+	Text text_1;
+	text_1.Create(hWnd, L"Image Save Path: ", NULL, 10, 10, 350, 100, NULL);
 	HWND hwndEdit = CreateWindowEx(
 		0, L"EDIT",   // predefined class 
 		NULL,         // no window title 
@@ -349,9 +329,9 @@ LRESULT CALLBACK M_WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 	switch (msg)
 	{
 	case WM_PAINT:
-		//hdc = BeginPaint(hWnd, &ps);
-		//M_Draw(hdc); //draw
-		//EndPaint(hWnd, &ps);
+		hdc = BeginPaint(hWnd, &ps);
+		M_Draw(hdc); //draw
+		EndPaint(hWnd, &ps);
 		break;
 	case WM_COMMAND:
 		M_CheckToolbarInput(wp, hWnd);
@@ -374,12 +354,16 @@ LRESULT CALLBACK M_WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 
 LRESULT CALLBACK Info_WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 {
+	HDC hdc;
+	PAINTSTRUCT ps;
 	switch (msg)
 	{
 	case WM_CLOSE:
 		DestroyWindow(hWnd);
 		break;
 	case WM_PAINT:
+		hdc = BeginPaint(hWnd, &ps);
+		EndPaint(hWnd, &ps);
 		break;
 	case WM_COMMAND:
 		Info_CheckButtonInput(wp, hWnd);
@@ -395,12 +379,16 @@ LRESULT CALLBACK Info_WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 
 LRESULT CALLBACK Settings_WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 {
+	HDC hdc;
+	PAINTSTRUCT ps;
 	switch (msg)
 	{
 	case WM_CLOSE:
 		DestroyWindow(hWnd);
 		break;
 	case WM_PAINT:
+		hdc = BeginPaint(hWnd, &ps);
+		EndPaint(hWnd, &ps);
 		break;
 	case WM_COMMAND:
 		break;

@@ -9,8 +9,7 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING //filesystem fix error
 #include <experimental/filesystem>
 
-#include "Button.h"
-#include "Text.h"
+#include "gui/Gui.h" //include all gui classes (Button, Text , etc...)
 #include "Log.h"
 
 // M_ <-- means main
