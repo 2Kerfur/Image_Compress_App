@@ -20,6 +20,7 @@ App is Windows only. Tested on Windows 10 LTSC. Created with Visual Studio 2019 
 6. Copy this .exe file with "resources" folder anywhere you whant and use app
 
 ## Usage
+![image](https://user-images.githubusercontent.com/73479696/167268723-1ad41929-c3ce-4399-a55d-e0367d35f3a4.png)
 
 
 ## License
