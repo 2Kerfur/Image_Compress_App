@@ -9,6 +9,10 @@
 #include "util/Log.h"
 #include "util/FileDialog.h"
 
+#include <string>
+#include <shobjidl.h> 
+#include <shlobj.h> 
+
 // M_ <-- means main
 
 //TODO: organize this structures better create one structure or create "window class"
@@ -36,6 +40,7 @@ struct SETTINGS_WINDOW {
 
 //logic image vars
 LPCWSTR image_path;
+LPCWSTR folder_path;
 bool image_opened = false;
 
 //program state

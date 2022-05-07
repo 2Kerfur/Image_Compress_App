@@ -142,7 +142,11 @@ void M_Menu_Open_File(HWND hWnd)
 void M_Menu_Open_Folder(HWND hWnd)
 {
 	APP_LOG("Menu Open Folder\n");
-
+	FileDialog fl;
+	if (fl.OpenFolder(hWnd) != NULL)
+	{
+		APP_LOG("Folder Opened");
+	}
 }
 
 void M_Menu_Exit(HWND hWnd)
