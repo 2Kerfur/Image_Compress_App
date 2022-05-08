@@ -24,61 +24,6 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int ncmdsho
 	return 0;
 }
 
-void M_Update(HWND hWnd) {
-	
-}
-
-void M_AddGUI(HWND hWnd)
-{
-	//LPCWSTR filename = L"D:\\DEV\\c++\\IMG_Compression\\Release\\resources\\example.png";
-	////const char* filename = "D:\\DEV\\c++\\IMG_Compression\\Release\\resources\\example.png";
-	//HBITMAP bmp = (HBITMAP)LoadImage(NULL, filename,
-	//	IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
-}
-
-void M_CreatePopupMenuOnCursor(HWND hWnd) //for future dev
-{
-	POINT cp;
-	GetCursorPos(&cp);
-	HMENU hPopupMenu = CreatePopupMenu();
-	InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, NULL, L"Fullscreen");
-	InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, NULL, L"Save");
-	InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, NULL, L"Save As");
-	InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, NULL, L"Delete");
-
-	SetForegroundWindow(hWnd);
-	TrackPopupMenu(hPopupMenu, TPM_BOTTOMALIGN | TPM_LEFTALIGN, cp.x, cp.y, 0, hWnd, NULL);
-}
-
-void M_Draw(HDC hdc, HWND hWnd) {
-	Gdiplus::Graphics gf(hdc);
-	
-	switch (program_state) 
-	{
-	case NOFILE_OPENED:
-	{
-		ResourceLoader rs;
-		Gdiplus::Rect sizeRect(264, 15, 172, 172);
-		Gdiplus::Bitmap* image = rs.LoadImageW("drag_and_drop.png");
-		gf.DrawImage(image, sizeRect);
-		
-		
-		APP_LOG("NOFILE_OPENED\n");
-		break;	
-	}
-	case IMAGE_OPENED:
-	{
-		Gdiplus::Bitmap input_image(image_path);
-		Gdiplus::Rect sizeRect(264, 15, 172, 172);
-		gf.DrawImage(&input_image, sizeRect);
-		APP_LOG("Draw scaled image");
-		break;
-	}
-	case FOLDER_OPENED:
-		
-	}
-}
-
 //toolbar
 void M_AddToolbar(HWND hWnd)
 {
@@ -97,7 +42,6 @@ void M_AddToolbar(HWND hWnd)
 	
 	SetMenu(hWnd, MainToolbar);
 }
-
 void M_CheckToolbarInput(WPARAM wp, HWND hWnd)
 {
 	switch (wp)
@@ -120,7 +64,6 @@ void M_CheckToolbarInput(WPARAM wp, HWND hWnd)
 	}
 	
 }
-
 void M_Menu_Open_File(HWND hWnd)
 {
 	FileDialog fileDialog;
@@ -130,7 +73,6 @@ void M_Menu_Open_File(HWND hWnd)
 		RedrawWindow(hWnd, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 	} else { APP_LOG("NO image was opened"); }
 }
-
 void M_Menu_Open_Folder(HWND hWnd)
 {
 	APP_LOG("Menu Open Folder\n");
@@ -146,19 +88,18 @@ void M_Menu_Open_Folder(HWND hWnd)
 		APP_LOG("No folder opened");
 	}
 }
-
 void M_Menu_Exit(HWND hWnd)
 {
 	APP_LOG("Menu Exit\n");
 	PostQuitMessage(0);
 }
-
 void M_Menu_App_Info(HWND hWnd)
 {
 	CreateInfoWindow(hWnd);
 }
 //toolbar ----
 
+//WINDOWS REGISTRATION & CREATION ------------------
 //info window --
 void RegisterInfoWindowClass(HINSTANCE hInst) {
 	WNDCLASSW dialog = { 0 };
@@ -167,7 +108,7 @@ void RegisterInfoWindowClass(HINSTANCE hInst) {
 	dialog.hInstance = hInst;
 	dialog.lpszClassName = Info_Window.class_name;
 	dialog.lpfnWndProc = Info_WindowProcedure;
-	dialog.hIcon = (HICON)LoadImage(NULL, L"resources/question.ico", IMAGE_ICON, 32, 32, LR_LOADFROMFILE | LR_DEFAULTSIZE);
+	dialog.hIcon = (HICON)LoadImage(NULL, L"resources/images/question.ico", IMAGE_ICON, 32, 32, LR_LOADFROMFILE | LR_DEFAULTSIZE);
 
 	RegisterClassW(&dialog);
 }
@@ -179,7 +120,6 @@ void CreateInfoWindow(HWND hWnd)
 		500, 500, Info_Window.width, Info_Window.height, 
 		hWnd, NULL, NULL, NULL);
 }
-//info window --
 
 //main window --
 int RegisterMWindowClass(HINSTANCE hInst)
@@ -190,7 +130,7 @@ int RegisterMWindowClass(HINSTANCE hInst)
 	wc.hInstance = hInst;
 	wc.lpszClassName = Main_Window.class_name;
 	wc.lpfnWndProc = M_WindowProcedure;
-	wc.hIcon = (HICON)LoadImage(NULL, L"resources/icon.ico", IMAGE_ICON, 32, 32, LR_LOADFROMFILE | LR_DEFAULTSIZE);
+	wc.hIcon = (HICON)LoadImage(NULL, L"resources/images/icon.ico", IMAGE_ICON, 32, 32, LR_LOADFROMFILE | LR_DEFAULTSIZE);
 	if (!RegisterClassW(&wc))
 		return 1;
 }
@@ -200,7 +140,6 @@ void CreateMWindow()
 		WS_VISIBLE | WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, 100, 100, Main_Window.width,
 		Main_Window.height, NULL, NULL, NULL, NULL); //create window from window class
 }
-//main window --
 
 //settings window --
 void RegisterSettingsWindowClass(HINSTANCE hInst)
@@ -211,17 +150,96 @@ void RegisterSettingsWindowClass(HINSTANCE hInst)
 	dialog_1.hInstance = hInst;
 	dialog_1.lpszClassName = Settings_Window.class_name;
 	dialog_1.lpfnWndProc = Settings_WindowProcedure;
-	dialog_1.hIcon = (HICON)LoadImage(NULL, L"resources/question.ico", IMAGE_ICON, 32, 32, LR_LOADFROMFILE | LR_DEFAULTSIZE);
+	dialog_1.hIcon = (HICON)LoadImage(NULL, L"resources/images/settings_window_icon.ico", IMAGE_ICON, 32, 32, LR_LOADFROMFILE | LR_DEFAULTSIZE);
 	RegisterClassW(&dialog_1);
 }
-
 void CreateSettingsWindow(HWND hWnd)
 {
 	CreateWindowW(Settings_Window.class_name, Settings_Window.name,
 		WS_VISIBLE | WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, 500, 500, Settings_Window.width,
 		Settings_Window.height, hWnd, NULL, NULL, NULL);
 }
-//settings window --
+//-------------------------------------------------
+
+//MAIN
+void M_Update(HWND hWnd) {
+
+}
+void M_AddGUI(HWND hWnd)
+{
+	//LPCWSTR filename = L"D:\\DEV\\c++\\IMG_Compression\\Release\\resources\\example.png";
+	////const char* filename = "D:\\DEV\\c++\\IMG_Compression\\Release\\resources\\example.png";
+	//HBITMAP bmp = (HBITMAP)LoadImage(NULL, filename,
+	//	IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+}
+void M_CreatePopupMenuOnCursor(HWND hWnd) //for future dev
+{
+	POINT cp;
+	GetCursorPos(&cp);
+	HMENU hPopupMenu = CreatePopupMenu();
+	InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, NULL, L"Fullscreen");
+	InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, NULL, L"Save");
+	InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, NULL, L"Save As");
+	InsertMenu(hPopupMenu, 0, MF_BYPOSITION | MF_STRING, NULL, L"Delete");
+
+	SetForegroundWindow(hWnd);
+	TrackPopupMenu(hPopupMenu, TPM_BOTTOMALIGN | TPM_LEFTALIGN, cp.x, cp.y, 0, hWnd, NULL);
+}
+void M_Draw(HDC hdc, HWND hWnd) {
+	Gdiplus::Graphics gf(hdc);
+
+	switch (program_state)
+	{
+	case NOFILE_OPENED:
+	{
+		ResourceLoader rs;
+		Gdiplus::Rect sizeRect(264, 15, 172, 172);
+
+		Gdiplus::Rect sizeRect1(80, 175, 172, 172);
+		Gdiplus::Rect sizeRect2(260, 175, 172, 172);
+		Gdiplus::Rect sizeRect3(430, 175, 172, 172);
+
+		Gdiplus::Rect sizeRect4(60, 350, 172, 172);
+		Gdiplus::Rect sizeRect5(280, 350, 172, 172);
+		Gdiplus::Rect sizeRect6(490, 350, 172, 172);
+
+		Gdiplus::Bitmap* image = rs.LoadImageW("noimage.jpg");
+
+		Gdiplus::Bitmap* image1 = rs.LoadImageW("arrow_left.png");
+		Gdiplus::Bitmap* image2 = rs.LoadImageW("arrow_down.png");
+		Gdiplus::Bitmap* image3 = rs.LoadImageW("arrow_right.png");
+
+		Gdiplus::Bitmap* image4 = rs.LoadImageW("no_image_available.png");
+		Gdiplus::Bitmap* image5 = rs.LoadImageW("no_image_available.png");
+		Gdiplus::Bitmap* image6 = rs.LoadImageW("no_image_available.png");
+
+		gf.DrawImage(image, sizeRect);
+		
+		gf.DrawImage(image1, sizeRect1);
+		gf.DrawImage(image2, sizeRect2);
+		gf.DrawImage(image3, sizeRect3);
+
+		gf.DrawImage(image4, sizeRect4);
+		gf.DrawImage(image5, sizeRect5);
+		gf.DrawImage(image6, sizeRect6);
+
+		APP_LOG("NOFILE_OPENED\n");
+		break;
+	}
+	case IMAGE_OPENED:
+	{
+		Gdiplus::Bitmap input_image(image_path);
+		Gdiplus::Rect sizeRect(264, 15, 172, 172);
+		gf.DrawImage(&input_image, sizeRect);
+		APP_LOG("Draw scaled image");
+		break;
+	}
+	case FOLDER_OPENED:
+		break;
+	}
+}
+
+//INFO
 void Info_CheckButtonInput(WPARAM wp, HWND hWnd) {
 	
 	switch (wp)
@@ -232,7 +250,6 @@ void Info_CheckButtonInput(WPARAM wp, HWND hWnd) {
 	}
 
 }
-
 void Info_AddGUI(HWND hWnd)
 {
 	HFONT SegoeFont = CreateFont(18, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Segoe UI");
@@ -245,11 +262,11 @@ void Info_AddGUI(HWND hWnd)
 	Github_button.SetFont(SegoeFont);
 }
 
+//SETTINGS
 void Settings_Update(HWND hWnd)
 {
 
 }
-
 void Settings_CheckButtonInput(WPARAM wp, HWND hWnd)
 {
 }
@@ -329,6 +346,28 @@ LRESULT CALLBACK Settings_WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM
 		break;
 	case WM_CREATE:
 		Settings_AddGUI(hWnd);
+		break;
+	default:
+		return DefWindowProcW(hWnd, msg, wp, lp);
+	}
+}
+
+LRESULT CALLBACK Image_WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
+{
+	HDC hdc; PAINTSTRUCT ps;
+	switch (msg)
+	{
+	case WM_CLOSE:
+		DestroyWindow(hWnd);
+		break;
+	case WM_PAINT:
+		hdc = BeginPaint(hWnd, &ps);
+		EndPaint(hWnd, &ps);
+		break;
+	case WM_COMMAND:
+		break;
+	case WM_CREATE:
+		//Settings_AddGUI(hWnd);
 		break;
 	default:
 		return DefWindowProcW(hWnd, msg, wp, lp);
