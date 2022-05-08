@@ -13,8 +13,6 @@
 #include "util/FileDialog.h"
 #include "util/ResourceLoader.h"
 
-// M_ <-- means main
-
 //TODO: organize this structures better create one structure or create "window class"
 struct MAIN_WINDOW {
     LPCWSTR name = L"Image Commpression App";

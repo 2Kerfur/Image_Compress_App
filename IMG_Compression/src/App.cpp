@@ -34,11 +34,6 @@ void M_AddGUI(HWND hWnd)
 	////const char* filename = "D:\\DEV\\c++\\IMG_Compression\\Release\\resources\\example.png";
 	//HBITMAP bmp = (HBITMAP)LoadImage(NULL, filename,
 	//	IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
-	//hWnd, L"hi", NULL, 200, 200, 50, 100
-	Button button;
-	button.Create(hWnd, L"Convert", NULL, 200, 200, 50, 100);
-	button.SetSize(100, 100);
-	button.SetPos(0, 0);
 }
 
 void M_CreatePopupMenuOnCursor(HWND hWnd) //for future dev
@@ -62,32 +57,25 @@ void M_Draw(HDC hdc, HWND hWnd) {
 	{
 	case NOFILE_OPENED:
 	{
-		Gdiplus::Rect sizeRect(200, 50, 150, 75);
-		WCHAR buffer[MAX_PATH];
-		GetModuleFileName(NULL, buffer, sizeof(buffer) / sizeof(buffer[0]));
-		std::wstring ws(buffer);
-		std::string str(ws.begin(), ws.end());
-		str = str.substr(0, str.find_last_of("\\/"));
-		str.append("\\resources\\drag_and_drop.png");
-		std::wstring temp = std::wstring(str.begin(), str.end());
-		LPCWSTR file_path = temp.c_str();
-		Gdiplus::Bitmap cat_bmp(file_path);
-		gf.DrawImage(&cat_bmp, 264, 0);
-		//drag_and_drop.png
-
+		ResourceLoader rs;
+		Gdiplus::Rect sizeRect(264, 15, 172, 172);
+		Gdiplus::Bitmap* image = rs.LoadImageW("drag_and_drop.png");
+		gf.DrawImage(image, sizeRect);
+		
+		
 		APP_LOG("NOFILE_OPENED\n");
 		break;	
 	}
 	case IMAGE_OPENED:
 	{
 		Gdiplus::Bitmap input_image(image_path);
-		Gdiplus::Rect sizeRect(200, 50, 150, 75);
+		Gdiplus::Rect sizeRect(264, 15, 172, 172);
 		gf.DrawImage(&input_image, sizeRect);
 		APP_LOG("Draw scaled image");
 		break;
 	}
 	case FOLDER_OPENED:
-		break;
+		
 	}
 }
 

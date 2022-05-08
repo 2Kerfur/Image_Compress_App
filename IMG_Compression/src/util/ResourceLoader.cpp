@@ -8,9 +8,9 @@ void ResourceLoader::Init(HWND hwnd)
 	Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, nullptr);
 }
 
-Gdiplus::Bitmap ResourceLoader::LoadImage(std::string fileName)
+Gdiplus::Bitmap* ResourceLoader::LoadImage(std::string fileName)
 {
-	/*WCHAR buffer[MAX_PATH];
+	WCHAR buffer[MAX_PATH];
 	GetModuleFileName(NULL, buffer, sizeof(buffer) / sizeof(buffer[0]));
 	std::wstring ws(buffer);
 	std::string str(ws.begin(), ws.end());
@@ -19,6 +19,7 @@ Gdiplus::Bitmap ResourceLoader::LoadImage(std::string fileName)
 	str.append(fileName);
 	std::wstring temp = std::wstring(str.begin(), str.end());
 	LPCWSTR file_path = temp.c_str();
-	Gdiplus::Bitmap image_b(file_path);
-	return image_b;*/
+	Gdiplus::Bitmap* bitmap = new Gdiplus::Bitmap(file_path);
+
+	return bitmap;
 }

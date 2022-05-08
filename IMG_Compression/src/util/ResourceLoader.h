@@ -6,9 +6,11 @@
 #include <gdiplus.h>
 #endif
 
+
 class ResourceLoader
 {
+public:
 	void Init(HWND hwnd);
-	Gdiplus::Bitmap LoadImage(std::string fileName);
+	Gdiplus::Bitmap* LoadImage(std::string fileName);
 };
 
