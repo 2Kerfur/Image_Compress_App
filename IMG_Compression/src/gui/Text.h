@@ -13,7 +13,6 @@ private:
 	int text_h; //button height
 	LPCWSTR text_text;
 	
-	
 public:
 	HWND Text_hWnd;
 	HWND Window_hWnd;

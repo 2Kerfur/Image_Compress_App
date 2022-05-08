@@ -1,5 +1,8 @@
 #pragma once
+#ifndef HEADERFILE_H
+#define HEADERFILE_H
 #include <Windows.h>
+#endif
 class FileDialog
 {
 private:

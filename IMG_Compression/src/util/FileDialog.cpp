@@ -59,8 +59,7 @@ LPCWSTR FileDialog::OpenFile(HWND hWnd)
 		}
 		CoUninitialize();
 	}
-	file_path = L"NoFile";
-	return file_path;
+	return nullptr;
 }
 
 LPCWSTR FileDialog::OpenFolder(HWND hWnd)

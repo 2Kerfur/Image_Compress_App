@@ -4,14 +4,14 @@
 #include <gdiplus.h> //for drawing
 #include <iostream>
 #include <shellapi.h> //open browser
+#include <shobjidl.h> 
+#include <shlobj.h> 
+
 
 #include "gui/Gui.h" //include all gui classes (Button, Text , etc...)
 #include "util/Log.h"
 #include "util/FileDialog.h"
-
-#include <string>
-#include <shobjidl.h> 
-#include <shlobj.h> 
+#include "util/ResourceLoader.h"
 
 // M_ <-- means main
 
@@ -71,7 +71,7 @@ HMENU ChildAboutMenu;
 void M_AddGUI(HWND);
 void M_Update(HWND hWnd);
 void M_CreatePopupMenuOnCursor(HWND hWnd);
-void M_Draw(HDC hdc);
+void M_Draw(HDC hdc, HWND hWnd);
 int RegisterMWindowClass(HINSTANCE hInst);
 void CreateMWindow();
 

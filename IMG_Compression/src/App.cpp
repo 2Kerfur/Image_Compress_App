@@ -55,13 +55,14 @@ void M_CreatePopupMenuOnCursor(HWND hWnd) //for future dev
 	TrackPopupMenu(hPopupMenu, TPM_BOTTOMALIGN | TPM_LEFTALIGN, cp.x, cp.y, 0, hWnd, NULL);
 }
 
-void M_Draw(HDC hdc) {
+void M_Draw(HDC hdc, HWND hWnd) {
 	Gdiplus::Graphics gf(hdc);
 	
 	switch (program_state) 
 	{
 	case NOFILE_OPENED:
 	{
+		Gdiplus::Rect sizeRect(200, 50, 150, 75);
 		WCHAR buffer[MAX_PATH];
 		GetModuleFileName(NULL, buffer, sizeof(buffer) / sizeof(buffer[0]));
 		std::wstring ws(buffer);
@@ -72,14 +73,17 @@ void M_Draw(HDC hdc) {
 		LPCWSTR file_path = temp.c_str();
 		Gdiplus::Bitmap cat_bmp(file_path);
 		gf.DrawImage(&cat_bmp, 264, 0);
+		//drag_and_drop.png
+
 		APP_LOG("NOFILE_OPENED\n");
 		break;	
 	}
 	case IMAGE_OPENED:
 	{
-		Gdiplus::Bitmap example_bmp(image_path);
-		gf.DrawImage(&example_bmp, 264, 0);
-		//RedrawWindow(hWnd, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+		Gdiplus::Bitmap input_image(image_path);
+		Gdiplus::Rect sizeRect(200, 50, 150, 75);
+		gf.DrawImage(&input_image, sizeRect);
+		APP_LOG("Draw scaled image");
 		break;
 	}
 	case FOLDER_OPENED:
@@ -133,7 +137,7 @@ void M_Menu_Open_File(HWND hWnd)
 {
 	FileDialog fileDialog;
 	image_path = fileDialog.OpenFile(hWnd);
-	if (image_path != L"NoFile") {
+	if (image_path != NULL) {
 		program_state = IMAGE_OPENED;
 		RedrawWindow(hWnd, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
 	} else { APP_LOG("NO image was opened"); }
@@ -145,7 +149,13 @@ void M_Menu_Open_Folder(HWND hWnd)
 	FileDialog fl;
 	if (fl.OpenFolder(hWnd) != NULL)
 	{
-		APP_LOG("Folder Opened");
+		folder_path = fl.folder_path;
+		program_state = FOLDER_OPENED;
+		APP_LOG("Folder opened");
+		RedrawWindow(hWnd, NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+	}
+	else {
+		APP_LOG("No folder opened");
 	}
 }
 
@@ -259,19 +269,18 @@ void Settings_AddGUI(HWND hWnd)
 {
 	auto hFont = CreateFont(18, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Segoe UI");
 	Text text_1;
-	text_1.Create(hWnd, L"Image Save Path: ", NULL, 10, 10, 350, 100, NULL);
+	text_1.Create(hWnd, L"Image Save Path: ", NULL, 10, 10, 350, 100, hFont);
 }
 
 //procedures ---
 LRESULT CALLBACK M_WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 {
-	HDC hdc;
-	PAINTSTRUCT ps;
+	HDC hdc; PAINTSTRUCT ps;
 	switch (msg)
 	{
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
-		M_Draw(hdc); //draw
+		M_Draw(hdc, hWnd); //draw
 		EndPaint(hWnd, &ps);
 		break;
 	case WM_COMMAND:
@@ -295,8 +304,7 @@ LRESULT CALLBACK M_WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 
 LRESULT CALLBACK Info_WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 {
-	HDC hdc;
-	PAINTSTRUCT ps;
+	HDC hdc; PAINTSTRUCT ps;
 	switch (msg)
 	{
 	case WM_CLOSE:
@@ -319,8 +327,7 @@ LRESULT CALLBACK Info_WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 
 LRESULT CALLBACK Settings_WindowProcedure(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 {
-	HDC hdc;
-	PAINTSTRUCT ps;
+	HDC hdc; PAINTSTRUCT ps;
 	switch (msg)
 	{
 	case WM_CLOSE:
