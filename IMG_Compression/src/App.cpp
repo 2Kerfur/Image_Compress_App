@@ -1,5 +1,6 @@
 #include "App.h" //430
 
+
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR args, int ncmdshow)
 {
 	//Init GDI+
